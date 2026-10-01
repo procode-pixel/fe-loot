@@ -1,0 +1,4 @@
+Contact: mailto:admin@feloot.app
+Preferred-Languages: ar, en
+Policy: https://fe-loot-v0.vercel.app/status
+Acknowledgments: Please report security issues privately. Do not test against other users' accounts.
