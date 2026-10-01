@@ -15,8 +15,9 @@ export default function Home() {
   const [game, setGame] = useState("");
   const [sort, setSort] = useState("featured");
   const [max, setMax] = useState("");
-  async function load(query = q, gameId = game, nextSort = sort, nextMax = max) {
-    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId) + "&sort=" + encodeURIComponent(nextSort) + "&max=" + encodeURIComponent(nextMax));
+  const [delivery, setDelivery] = useState("");
+  async function load(query = q, gameId = game, nextSort = sort, nextMax = max, nextDelivery = delivery) {
+    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId) + "&sort=" + encodeURIComponent(nextSort) + "&max=" + encodeURIComponent(nextMax) + "&delivery=" + encodeURIComponent(nextDelivery));
     setData(await res.json());
   }
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function Home() {
         <nav>
           <Link href="/compare">مقارنة</Link>
           <Link href="/wallet">المحفظة</Link>
+          <Link href="/help">مساعدة</Link>
           <Link href="/status">الحالة</Link>
           <Link href="/account">حسابي</Link>
           <Link href="/orders">طلباتي</Link>
@@ -60,7 +62,12 @@ export default function Home() {
               <option value="price_desc">السعر: الأعلى</option>
               <option value="rating">التقييم</option>
             </select>
-            <input placeholder="أقصى سعر" value={max} onChange={(e) => { setMax(e.target.value); load(q, game, sort, e.target.value); }} />
+            <input placeholder="أقصى سعر" value={max} onChange={(e) => { setMax(e.target.value); load(q, game, sort, e.target.value, delivery); }} />
+            <select value={delivery} onChange={(e) => { setDelivery(e.target.value); load(q, game, sort, max, e.target.value); }}>
+              <option value="">كل التسليم</option>
+              <option value="instant">تسليم فوري</option>
+              <option value="manual">تسليم يدوي</option>
+            </select>
           </div>
         </section>
         <h2>تصفح حسب اللعبة</h2>
@@ -85,7 +92,7 @@ export default function Home() {
           ))}
         </div>
       </main>
-      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link></footer>
+      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/help">المساعدة</Link> · <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link></footer>
     </>
   );
 }

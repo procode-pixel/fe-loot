@@ -18,7 +18,9 @@ export async function GET(req) {
   const user = currentUser(req);
   let rows = db.listings.filter((l) => l.status === "active");
   if (mine && user) rows = db.listings.filter((l) => l.sellerId === user.id);
+  const delivery = url.searchParams.get("delivery");
   if (game && GAMES_IDS.includes(game)) rows = rows.filter((l) => l.game === game);
+  if (delivery === "instant" || delivery === "manual") rows = rows.filter((l) => l.delivery === delivery);
   if (q) rows = rows.filter((l) => (l.title + " " + (l.description || "")).toLowerCase().includes(q));
   if (Number.isFinite(min) && min > 0) rows = rows.filter((l) => l.price >= min);
   if (Number.isFinite(max) && max > 0) rows = rows.filter((l) => l.price <= max);
