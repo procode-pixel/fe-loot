@@ -1,7 +1,8 @@
-const { load } = require("../../../../lib/store");
+const { load, ready } = require("../../../../lib/store");
 const { currentUser, ensureAdmin } = require("../../../../lib/auth");
 
 export async function GET(req) {
+  await ready();
   ensureAdmin();
   const user = currentUser(req);
   if (!user || user.role !== "admin") return Response.json({ error: "ممنوع" }, { status: 403 });
