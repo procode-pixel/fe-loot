@@ -22,3 +22,9 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Security headers: frame deny, nosniff, HSTS, CSP, referrer policy.
 - This build does not move real funds.
 - Favorites: POST /api/favorites. Reports: POST /api/reports.
+
+## Ops
+- Public health: /api/health
+- Scanner paths (.env, wp-admin, .php) return 404 from middleware.
+- Profile name: POST /api/auth/profile
+- On Vercel without DATABASE_URL, data lives in /tmp and resets. Do not take real payments until Postgres is connected.
