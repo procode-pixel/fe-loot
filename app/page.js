@@ -16,6 +16,7 @@ export default function Home() {
       <header>
         <Link className="brand" href="/">FeLoot</Link>
         <nav>
+          <Link href="/account">حسابي</Link>
           <Link href="/orders">طلباتي</Link>
           {me?.role === "admin" && <Link href="/admin">الإدارة</Link>}
           <Link href="/login">{me ? me.name : "تسجيل الدخول"}</Link>

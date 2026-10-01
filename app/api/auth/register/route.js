@@ -1,6 +1,6 @@
 const { load, save, id } = require("../../../../lib/store");
 const { scryptHash, sign, cookieHeader, ensureAdmin, rateLimit, ip } = require("../../../../lib/auth");
-const { clean, isEmail } = require("../../../../lib/guard");
+const { clean, isEmail, strongPassword } = require("../../../../lib/guard");
 
 export async function POST(req) {
   ensureAdmin();
@@ -9,8 +9,8 @@ export async function POST(req) {
   const name = clean(body.name, 40);
   const email = clean(body.email, 120).toLowerCase();
   const password = String(body.password || "");
-  if (name.length < 2 || !isEmail(email) || password.length < 8) {
-    return Response.json({ error: "الاسم والإيميل وكلمة مرور 8 أحرف على الأقل مطلوبة." }, { status: 400 });
+  if (name.length < 2 || !isEmail(email) || !strongPassword(password)) {
+    return Response.json({ error: "الاسم والإيميل وكلمة مرور 10 أحرف على الأقل وفيها حرف ورقم مطلوبة." }, { status: 400 });
   }
   const db = load();
   if (db.users.some((u) => u.email === email)) return Response.json({ error: "الإيميل مسجل بالفعل." }, { status: 409 });
