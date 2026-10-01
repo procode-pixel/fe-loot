@@ -18,13 +18,15 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - New listings stay pending until an admin approves them.
 - Credentials are encrypted at rest and stripped from public listing responses.
 - Login lockout, per-IP and per-email rate limits, origin check on mutating APIs.
+- Rate-limit map prunes expired keys instead of wiping the whole limiter.
 - Password change bumps tokenVersion so old sessions stop working on next login token.
 - Security headers: frame deny, nosniff, HSTS, CSP, referrer policy.
-- This build does not move real funds.
-- Favorites: POST /api/favorites. Reports: POST /api/reports.
+- This build does not move real funds. Do not take payments until Postgres and a payment provider are connected.
+- Favorites: POST /api/favorites. Reports: POST /api/reports. Notifications: GET/POST /api/notifications.
 
 ## Ops
 - Public health: /api/health
 - Scanner paths (.env, wp-admin, .php) return 404 from middleware.
 - Profile name: POST /api/auth/profile
-- On Vercel without DATABASE_URL, data lives in /tmp and resets. Do not take real payments until Postgres is connected.
+- On Vercel without DATABASE_URL, data lives in /tmp and resets.
+- Vercel team env access may require reconnecting the Vercel account that owns fe-loot-v0.
