@@ -1,7 +1,9 @@
-const { load, save, id } = require("../../../lib/store");
+const { load, save, ready, id } = require("../../../lib/store");
+const { open } = require("../../../lib/box");
 const { currentUser, ensureAdmin, rateLimit, ip } = require("../../../lib/auth");
 
 export async function GET(req) {
+  await ready();
   ensureAdmin();
   const user = currentUser(req);
   if (!user) return Response.json({ error: "غير مصرح" }, { status: 401 });
@@ -11,6 +13,7 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  await ready();
   ensureAdmin();
   if (!rateLimit("buy:" + ip(req), 15)) return Response.json({ error: "محاولات كثيرة." }, { status: 429 });
   const user = currentUser(req);
@@ -29,15 +32,15 @@ export async function POST(req) {
   listing.status = "reserved";
   db.orders.unshift(order);
   db.audit.push({ at: order.createdAt, action: "escrow.hold", orderId: order.id, userId: user.id });
-  save(db);
+  await save(db);
   return Response.json({ ok: true, order: sanitize(order, user) });
 }
 
 function sanitize(order, user) {
   const copy = { ...order };
   const canSee = order.status === "released" || order.status === "delivered" || user.role === "admin" || (order.delivery === "instant" && order.status === "escrow_held" && user.id === order.buyerId);
-  if (!canSee) copy.credentials = null;
-  if (user.id !== order.buyerId && user.role !== "admin" && user.id !== order.sellerId) copy.credentials = null;
+  const allowed = canSee && (user.id === order.buyerId || user.role === "admin");
+  copy.credentials = allowed ? open(order.credentials) : null;
   return copy;
 }
 module.exports = { sanitize };
