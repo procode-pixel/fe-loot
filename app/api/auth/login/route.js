@@ -1,5 +1,7 @@
 const { load, save } = require("../../../../lib/store");
 const { verifyPassword, sign, cookieHeader, ensureAdmin, rateLimit, ip, publicUser } = require("../../../../lib/auth");
+const { open } = require("../../../../lib/box");
+const { verifyTotp } = require("../../../../lib/totp");
 const { clean } = require("../../../../lib/guard");
 
 export async function POST(req) {
@@ -26,6 +28,12 @@ export async function POST(req) {
       save(db);
     }
     return Response.json({ error: "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062f\u062e\u0648\u0644 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629." }, { status: 401 });
+  }
+  if (user.totpEnabled) {
+    const secret = open(user.totpSecret || "");
+    if (!verifyTotp(secret, body.code)) {
+      return Response.json({ error: "كود التحقق الثنائي مطلوب أو غير صحيح.", need2fa: true }, { status: 401 });
+    }
   }
   user.failedLogins = 0;
   user.lockedUntil = null;

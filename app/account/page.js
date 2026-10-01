@@ -8,6 +8,9 @@ export default function Account() {
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState({ current: "", next: "" });
   const [name, setName] = useState("");
+  const [two, setTwo] = useState(null);
+  const [code, setCode] = useState("");
+  const [disablePass, setDisablePass] = useState("");
   useEffect(() => {
     fetch("/api/auth/me").then((r) => r.json()).then((d) => { setMe(d.user); if (d.user) setName(d.user.name || ""); });
     fetch("/api/favorites").then((r) => r.json()).then((d) => setFavs(d.favorites || []));
@@ -44,6 +47,31 @@ export default function Account() {
             <button className="btn" type="submit">حفظ</button>
             {msg && <p>{msg}</p>}
           </form>
+          
+          <section className="card">
+            <h2>التحقق الثنائي</h2>
+            <p>{me.totpEnabled ? "مفعّل. الدخول يطلب كود تطبيق المصادقة." : "غير مفعّل. فعّله لحماية الحساب."}</p>
+            {!me.totpEnabled && <button className="btn" type="button" onClick={async () => {
+              const res = await fetch("/api/auth/2fa", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "start" }) });
+              setTwo(await res.json());
+            }}>بدء التفعيل</button>}
+            {two?.secret && <p>أضف السر في تطبيق المصادقة: <b>{two.secret}</b></p>}
+            <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="كود من 6 أرقام" />
+            <button className="btn" type="button" onClick={async () => {
+              const res = await fetch("/api/auth/2fa", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "confirm", code }) });
+              const data = await res.json();
+              setMsg(data.error || "تم تفعيل التحقق الثنائي. سجل الدخول من جديد.");
+            }}>تأكيد التفعيل</button>
+            {me.totpEnabled && <>
+              <input type="password" value={disablePass} onChange={(e) => setDisablePass(e.target.value)} placeholder="كلمة المرور لإيقاف 2FA" />
+              <button type="button" onClick={async () => {
+                const res = await fetch("/api/auth/2fa", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "disable", password: disablePass, code }) });
+                const data = await res.json();
+                setMsg(data.error || "تم إيقاف التحقق الثنائي.");
+              }}>إيقاف التحقق الثنائي</button>
+            </>}
+          </section>
+
           <section className="card">
             <h2>المفضلة</h2>
             {favs.length === 0 && <p>مفيش عروض محفوظة.</p>}

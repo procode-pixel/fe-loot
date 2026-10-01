@@ -10,7 +10,11 @@ const PROBES = [
   "/vendor/phpunit",
   "/cgi-bin",
   "/actuator",
-  "/server-status"
+  "/server-status",
+  "/.aws",
+  "/.ssh",
+  "/config.json",
+  "/wp-content"
 ];
 
 export function middleware(req) {
