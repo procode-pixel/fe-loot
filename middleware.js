@@ -18,7 +18,7 @@ export function middleware(req) {
   if (PROBES.some((p) => path === p || path.startsWith(p + "/") || path.includes(p))) {
     return new NextResponse("not found", { status: 404 });
   }
-  if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e")) {
+  if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e") || path.includes("%00")) {
     return new NextResponse("not found", { status: 404 });
   }
   const len = Number(req.headers.get("content-length") || 0);
@@ -28,10 +28,14 @@ export function middleware(req) {
   res.headers.set("X-Frame-Options", "DENY");
   res.headers.set("X-Content-Type-Options", "nosniff");
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
   res.headers.set("X-DNS-Prefetch-Control", "off");
   res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
   res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+  res.headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+  );
   if (process.env.NODE_ENV === "production") {
     res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
   }
