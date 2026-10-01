@@ -1,0 +1,6 @@
+Contact: mailto:support@feloot.gg
+Preferred-Languages: ar, en
+Canonical: https://fe-loot-v0.vercel.app/.well-known/security.txt
+Policy: https://fe-loot-v0.vercel.app/security
+Expires: 2027-10-01T00:00:00.000Z
+Acknowledgments: Report issues privately. Do not test against other users' accounts.

@@ -39,10 +39,18 @@ export function middleware(req) {
   if (process.env.NODE_ENV === "production") {
     res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
   }
-  if (req.method !== "GET" && req.method !== "HEAD" && path.startsWith("/api/")) {
+  if (req.method !== "GET" && req.method !== "HEAD" && req.method !== "OPTIONS" && path.startsWith("/api/")) {
+    const allowed = ["POST", "PUT", "PATCH", "DELETE"];
+    if (!allowed.includes(req.method)) {
+      return NextResponse.json({ error: "طريقة غير مسموحة." }, { status: 405 });
+    }
+    const host = req.headers.get("host") || "";
     const origin = req.headers.get("origin");
-    const host = req.headers.get("host");
-    if (origin && host) {
+    const fetchSite = (req.headers.get("sec-fetch-site") || "").toLowerCase();
+    if (fetchSite === "cross-site") {
+      return NextResponse.json({ error: "طلب خارجي مرفوض." }, { status: 403 });
+    }
+    if (origin) {
       try {
         if (new URL(origin).host !== host) {
           return NextResponse.json({ error: "أصل الطلب غير مسموح." }, { status: 403 });
@@ -50,6 +58,8 @@ export function middleware(req) {
       } catch {
         return NextResponse.json({ error: "أصل الطلب غير صالح." }, { status: 403 });
       }
+    } else if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "same-site" && fetchSite !== "none") {
+      return NextResponse.json({ error: "أصل الطلب مطلوب." }, { status: 403 });
     }
   }
   return res;

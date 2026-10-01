@@ -7,13 +7,19 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe public pages
+      - name: Probe public pages and reject probes
         run: |
           set -e
           base="${SITE_URL:-https://fe-loot-v0.vercel.app}"
-          for path in / /status /setup /api/health /security; do
-            code=$(curl -s -o /tmp/body -w "%{http_code}" -L --max-time 20 "$base$path")
+          for path in / /status /setup /api/health /security /help /terms /privacy; do
+            code=$(curl -s -o /tmp/body -w "%{http_code}" -L --max-time 25 "$base$path")
             echo "$path $code"
             test "$code" = "200"
           done
-          grep -q "ok\\|status\\|FeLoot\\|feloot" /tmp/body || true
+          grep -q "FeLoot\|feloot\|ok" /tmp/body
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$base/.env")
+          echo "probe .env $code"
+          test "$code" = "404"
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 -X POST "$base/api/auth/login" -H "Origin: https://evil.example" -H "Content-Type: application/json" -d "{}")
+          echo "csrf $code"
+          test "$code" = "403"
