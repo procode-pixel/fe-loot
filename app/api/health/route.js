@@ -1,7 +1,8 @@
-const { load, storageMode } = require("../../../lib/store");
+const { load, storageMode, ready } = require("../../../lib/store");
 const { hasKey } = require("../../../lib/box");
 
 export async function GET() {
+  await ready();
   const db = load();
   const authOk = String(process.env.AUTH_SECRET || "").length >= 24;
   const durable = Boolean(process.env.DATABASE_URL);
