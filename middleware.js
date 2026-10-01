@@ -8,7 +8,9 @@ const PROBES = [
   "/.git",
   "/xmlrpc.php",
   "/vendor/phpunit",
-  "/cgi-bin"
+  "/cgi-bin",
+  "/actuator",
+  "/server-status"
 ];
 
 export function middleware(req) {
@@ -16,9 +18,11 @@ export function middleware(req) {
   if (PROBES.some((p) => path === p || path.startsWith(p + "/") || path.includes(p))) {
     return new NextResponse("not found", { status: 404 });
   }
-  if (path.endsWith(".php") || path.includes("..")) {
+  if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e")) {
     return new NextResponse("not found", { status: 404 });
   }
+  const len = Number(req.headers.get("content-length") || 0);
+  if (len > 100_000) return NextResponse.json({ error: "الطلب كبير جداً." }, { status: 413 });
 
   const res = NextResponse.next();
   res.headers.set("X-Frame-Options", "DENY");
@@ -26,6 +30,8 @@ export function middleware(req) {
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
   res.headers.set("X-DNS-Prefetch-Control", "off");
+  res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
   if (process.env.NODE_ENV === "production") {
     res.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
   }

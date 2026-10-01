@@ -13,8 +13,10 @@ export default function Home() {
   const [q, setQ] = useState("");
   const [me, setMe] = useState(null);
   const [game, setGame] = useState("");
-  async function load(query = "", gameId = game) {
-    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId));
+  const [sort, setSort] = useState("featured");
+  const [max, setMax] = useState("");
+  async function load(query = q, gameId = game, nextSort = sort, nextMax = max) {
+    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId) + "&sort=" + encodeURIComponent(nextSort) + "&max=" + encodeURIComponent(nextMax));
     setData(await res.json());
   }
   useEffect(() => {
@@ -30,6 +32,7 @@ export default function Home() {
         <Link className="brand" href="/">FeLoot</Link>
         <nav>
           <Link href="/compare">مقارنة</Link>
+          <Link href="/wallet">المحفظة</Link>
           <Link href="/status">الحالة</Link>
           <Link href="/account">حسابي</Link>
           <Link href="/orders">طلباتي</Link>
@@ -49,7 +52,16 @@ export default function Home() {
             <div><b>{data.listings.length}</b><div className="muted">عرض متاح</div></div>
             <div><b>1-5 د</b><div className="muted">متوسط المراجعة</div></div>
           </div>
-          <input placeholder="ابحث عن أكونت" value={q} onChange={(e) => { setQ(e.target.value); load(e.target.value); }} />
+          <div className="grid">
+            <input placeholder="ابحث عن أكونت" value={q} onChange={(e) => { setQ(e.target.value); load(e.target.value); }} />
+            <select value={sort} onChange={(e) => { setSort(e.target.value); load(q, game, e.target.value, max); }}>
+              <option value="featured">المميز</option>
+              <option value="price_asc">السعر: الأقل</option>
+              <option value="price_desc">السعر: الأعلى</option>
+              <option value="rating">التقييم</option>
+            </select>
+            <input placeholder="أقصى سعر" value={max} onChange={(e) => { setMax(e.target.value); load(q, game, sort, e.target.value); }} />
+          </div>
         </section>
         <h2>تصفح حسب اللعبة</h2>
         <div className="grid">
@@ -73,7 +85,7 @@ export default function Home() {
           ))}
         </div>
       </main>
-      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/status">الحالة</Link></footer>
+      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link></footer>
     </>
   );
 }
