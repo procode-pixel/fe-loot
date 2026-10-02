@@ -7,6 +7,7 @@ const { clean } = require("../../../../lib/guard");
 export async function POST(req) {
   ensureAdmin();
   const body = await req.json().catch(() => ({}));
+  if (body.website) return Response.json({ error: "طلب مرفوض." }, { status: 400 });
   const email = clean(body.email, 120).toLowerCase();
   const password = String(body.password || "");
   if (!rateLimit("login:" + ip(req), 8) || !rateLimit("login-email:" + email, 6)) {

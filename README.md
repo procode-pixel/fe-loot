@@ -37,3 +37,8 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Demo wallet top-up with daily cap. Purchases debit balance into escrow; refunds and seller release credit the wallet.
 - Price offers at /offers and /api/offers. Dispute after release is blocked.
 - Order actions await durable save. Rate-limit IP prefers x-vercel-forwarded-for.
+
+## 2026-10-02 hardening
+- Register session now includes token version so new accounts stay logged in.
+- Honeypot field on login/register rejects filled bot submissions.
+- Account page can revoke other sessions and delete the account after password confirmation. Open escrow orders block deletion. Admin account cannot be deleted here.

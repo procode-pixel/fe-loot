@@ -74,6 +74,29 @@ export default function Account() {
           </section>
 
           <section className="card">
+            <h2>الجلسات والحذف</h2>
+            <p>لو دخلت من جهاز مش بتاعك، اخرج كل الجلسات. الجلسة الحالية هتفضل شغالة.</p>
+            <button className="btn" type="button" onClick={async () => {
+              const res = await fetch("/api/auth/sessions", { method: "POST" });
+              const data = await res.json();
+              setMsg(data.error || "تم إلغاء الجلسات الأخرى.");
+            }}>إلغاء الجلسات الأخرى</button>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              const password = e.target.delpass.value;
+              const confirm = e.target.confirm.value;
+              const res = await fetch("/api/auth/delete", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password, confirm }) });
+              const data = await res.json();
+              if (data.ok) window.location.href = "/";
+              setMsg(data.error || "تم حذف الحساب.");
+            }}>
+              <input name="delpass" type="password" placeholder="كلمة المرور للحذف" />
+              <input name="confirm" placeholder="اكتب DELETE" />
+              <button className="btn" type="submit">حذف الحساب</button>
+            </form>
+          </section>
+
+          <section className="card">
             <h2>المفضلة</h2>
             {favs.length === 0 && <p>مفيش عروض محفوظة.</p>}
             {favs.map((l) => <p key={l.id}><Link href={"/listing/" + l.id}>{l.title}</Link> · {l.price} EGP</p>)}
