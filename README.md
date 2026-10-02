@@ -42,3 +42,7 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Register session now includes token version so new accounts stay logged in.
 - Honeypot field on login/register rejects filled bot submissions.
 - Account page can revoke other sessions and delete the account after password confirmation. Open escrow orders block deletion. Admin account cannot be deleted here.
+
+## 2026-10-02 dashboard
+- Logged-in seller/buyer dashboard at /dashboard and /api/dashboard. Credentials are not included.
+- Daily health workflow also probes /dashboard.

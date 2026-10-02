@@ -40,6 +40,7 @@ export default function Home() {
           <Link href="/help">مساعدة</Link>
           <Link href="/support">الدعم</Link>
           <Link href="/status">الحالة</Link>
+          <Link href="/dashboard">لوحتي</Link>
           <Link href="/account">حسابي</Link>
           <Link href="/orders">طلباتي</Link>
           {me?.role === "admin" && <Link href="/admin">الإدارة</Link>}
