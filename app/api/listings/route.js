@@ -1,4 +1,4 @@
-const { load, save, ready, id, publicListing, GAMES } = require("../../../lib/store");
+const { load, ready, mutate, id, publicListing, GAMES } = require("../../../lib/store");
 const { currentUser, ensureAdmin, rateLimit, ip } = require("../../../lib/auth");
 const { clean } = require("../../../lib/guard");
 const { seal } = require("../../../lib/box");
@@ -32,9 +32,24 @@ export async function GET(req) {
   else rows.sort((a, b) => Number(b.featured) - Number(a.featured) || String(b.createdAt).localeCompare(String(a.createdAt)));
   return Response.json({
     games: GAMES.map((g) => ({ ...g, count: db.listings.filter((l) => l.game === g.id && l.status === "active").length })),
-    listings: rows.map(publicListing),
+    listings: rows.map((l) => withDeal(db, l)),
     preview: !process.env.DATABASE_URL
   });
+}
+
+function gameMedian(db, gameId) {
+  const prices = db.listings.filter((l) => l.game === gameId && l.status === "active").map((l) => Number(l.price)).filter((n) => Number.isFinite(n)).sort((a, b) => a - b);
+  if (!prices.length) return 0;
+  const mid = Math.floor(prices.length / 2);
+  return prices.length % 2 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
+}
+
+function withDeal(db, listing) {
+  const pub = publicListing(listing);
+  const med = gameMedian(db, listing.game);
+  const price = Number(listing.price);
+  const dealPercent = med > 0 && price < med ? Math.round((1 - price / med) * 100) : 0;
+  return { ...pub, dealPercent, gameMedian: med };
 }
 
 export async function POST(req) {
@@ -53,16 +68,17 @@ export async function POST(req) {
   if (title.length < 4 || !GAMES_IDS.includes(game) || !Number.isFinite(price) || price < 50 || price > 500000 || credentials.length < 4) {
     return Response.json({ error: "راجع بيانات العرض: العنوان، اللعبة، السعر، وبيانات التسليم." }, { status: 400 });
   }
-  const db = load();
-  const open = db.listings.filter((l) => l.sellerId === user.id && l.status === "pending").length;
-  if (open >= 5 && user.role !== "admin") return Response.json({ error: "عندك 5 عروض بانتظار المراجعة." }, { status: 429 });
-  const listing = {
-    id: id("l"), game, title, price, sellerId: user.id, sellerName: user.name, rating: user.rating || 5,
-    delivery, featured: false, status: "pending", description, credentials: seal(credentials), createdAt: new Date().toISOString()
-  };
-  db.listings.unshift(listing);
-  db.audit.push({ at: listing.createdAt, action: "listing.pending", userId: user.id, listingId: listing.id });
-  if (db.audit.length > 400) db.audit = db.audit.slice(-400);
-  await save(db);
-  return Response.json({ ok: true, listing: publicListing(listing), message: "العرض اتبعت للمراجعة ومش هيظهر قبل موافقة الإدارة." });
+  const result = await mutate(async (db) => {
+    const open = db.listings.filter((l) => l.sellerId === user.id && l.status === "pending").length;
+    if (open >= 5 && user.role !== "admin") return { save: false, status: 429, body: { error: "عندك 5 عروض بانتظار المراجعة." } };
+    const listing = {
+      id: id("l"), game, title, price, sellerId: user.id, sellerName: user.name, rating: user.rating || 5,
+      delivery, featured: false, status: "pending", description, credentials: seal(credentials), createdAt: new Date().toISOString()
+    };
+    db.listings.unshift(listing);
+    db.audit.push({ at: listing.createdAt, action: "listing.pending", userId: user.id, listingId: listing.id });
+    if (db.audit.length > 400) db.audit = db.audit.slice(-400);
+    return { save: true, status: 200, body: { ok: true, listing: publicListing(listing), message: "العرض اتبعت للمراجعة ومش هيظهر قبل موافقة الإدارة." } };
+  });
+  return Response.json(result.body, { status: result.status || 200 });
 }

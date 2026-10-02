@@ -34,6 +34,7 @@ export default function Home() {
         <Link className="brand" href="/">FeLoot</Link>
         <nav>
           <Link href="/games">الألعاب</Link>
+          <Link href="/deals">صفقات</Link>
           <Link href="/compare">مقارنة</Link>
           <Link href="/recent">شوهد مؤخراً</Link>
           <Link href="/wallet">المحفظة</Link>
@@ -89,7 +90,7 @@ export default function Home() {
           {data.listings.length === 0 && <p className="muted">مفيش عروض مطابقة. غيّر اللعبة أو السعر أو امسح البحث.</p>}
           {data.listings.map((l) => (
             <article className="card" key={l.id}>
-              <div className="pill">{l.delivery === "instant" ? "تسليم فوري" : "تسليم يدوي"} {l.featured ? "• مميز" : ""}</div>
+              <div className="pill">{l.delivery === "instant" ? "تسليم فوري" : "تسليم يدوي"} {l.featured ? "• مميز" : ""} {l.dealPercent >= 10 ? `• أوفر ${l.dealPercent}%` : ""}</div>
               <h3>{l.title}</h3>
               <p className="muted">{l.sellerName} · {l.rating}</p>
               <b>{l.price.toLocaleString("ar-EG")} EGP</b>

@@ -25,7 +25,13 @@ const PROBES = [
   "/web.config",
   "/elmah",
   "/trace.axd",
-  "/debug/pprof"
+  "/debug/pprof",
+  "/adminer",
+  "/telescope",
+  "/graphql",
+  "/api/graphql",
+  "/_profiler",
+  "/server-info"
 ];
 
 export function middleware(req) {
@@ -35,6 +41,9 @@ export function middleware(req) {
   }
   if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e") || path.includes("%00")) {
     return new NextResponse("not found", { status: 404 });
+  }
+  if (req.method === "TRACE" || req.method === "TRACK") {
+    return new NextResponse("not found", { status: 405 });
   }
   const len = Number(req.headers.get("content-length") || 0);
   if (len > 100_000) return NextResponse.json({ error: "الطلب كبير جداً." }, { status: 413 });
@@ -59,6 +68,10 @@ export function middleware(req) {
     const allowed = ["POST", "PUT", "PATCH", "DELETE"];
     if (!allowed.includes(req.method)) {
       return NextResponse.json({ error: "طريقة غير مسموحة." }, { status: 405 });
+    }
+    const ctype = (req.headers.get("content-type") || "").toLowerCase();
+    if (req.method !== "DELETE" && !ctype.includes("application/json")) {
+      return NextResponse.json({ error: "نوع المحتوى يجب أن يكون JSON." }, { status: 415 });
     }
     const host = req.headers.get("host") || "";
     const origin = req.headers.get("origin");

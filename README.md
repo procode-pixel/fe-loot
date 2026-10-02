@@ -46,3 +46,8 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 ## 2026-10-02 dashboard
 - Logged-in seller/buyer dashboard at /dashboard and /api/dashboard. Credentials are not included.
 - Daily health workflow also probes /dashboard.
+
+## 2026-10-02 deals
+- Wallet top-up and listing create go through the write lock.
+- /deals shows active listings at least 10% under the same-game median.
+- Mutating APIs require JSON. TRACE/TRACK rejected.
