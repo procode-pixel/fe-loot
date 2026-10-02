@@ -31,7 +31,14 @@ const PROBES = [
   "/graphql",
   "/api/graphql",
   "/_profiler",
-  "/server-info"
+  "/server-info",
+  "/wp-json",
+  "/boaform",
+  "/hnap1",
+  "/solr",
+  "/manager/html",
+  "/jmx-console",
+  "/invoker"
 ];
 
 export function middleware(req) {

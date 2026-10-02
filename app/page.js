@@ -40,6 +40,7 @@ export default function Home() {
           <Link href="/wallet">المحفظة</Link>
           <Link href="/offers">عروض</Link>
           <Link href="/alerts">تنبيهات</Link>
+          <Link href="/fees">الرسوم</Link>
           <Link href="/help">مساعدة</Link>
           <Link href="/support">الدعم</Link>
           <Link href="/status">الحالة</Link>

@@ -51,3 +51,7 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Wallet top-up and listing create go through the write lock.
 - /deals shows active listings at least 10% under the same-game median.
 - Mutating APIs require JSON. TRACE/TRACK rejected.
+
+## 2026-10-02 fees
+- Public fee schedule at /fees. Preview commission is zero until a payment provider is connected.
+- Extra scanner paths blocked in middleware.
