@@ -6,23 +6,33 @@ export async function GET() {
   const db = load();
   const authOk = String(process.env.AUTH_SECRET || "").length >= 24;
   const durable = Boolean(process.env.DATABASE_URL);
+  const encryption = hasKey();
+  const marketplaceReady = authOk && durable && encryption;
   return Response.json({
     ok: true,
     service: "feloot",
-    previewMode: !durable,
-    marketplaceReady: authOk,
+    status: marketplaceReady ? "ready" : "degraded",
+    previewMode: !marketplaceReady,
+    marketplaceReady,
     checks: {
       frontend: true,
+      database: durable,
       durableDatabase: durable,
       storage: storageMode(),
       authSecret: authOk,
-      encryption: hasKey()
+      encryption,
+      cronSecret: String(process.env.CRON_SECRET || "").length >= 16
+    },
+    userFlows: {
+      browse: true,
+      register: marketplaceReady,
+      sell: marketplaceReady,
+      checkout: false,
+      admin: authOk
     },
     counts: {
-      users: db.users.length,
-      listings: db.listings.length,
-      orders: db.orders.length,
-      reports: (db.reports || []).length
+      listings: (db.listings || []).filter((l) => l.status === "active").length,
+      orders: (db.orders || []).length
     },
     time: new Date().toISOString()
   });

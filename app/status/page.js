@@ -1,17 +1,31 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
 export default function Status() {
   const [health, setHealth] = useState(null);
-  useEffect(() => { fetch("/api/health").then((r) => r.json()).then(setHealth).catch(() => setHealth({ ok: false })); }, []);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    fetch("/api/health")
+      .then((r) => r.json())
+      .then(setHealth)
+      .catch(() => setError("تعذر قراءة الحالة"));
+  }, []);
+  const flows = health?.userFlows || {};
   return (
-    <main>
+    <main style={{ maxWidth: 760, margin: "40px auto", padding: 16 }}>
+      <Link href="/">FeLoot</Link>
       <h1>حالة FeLoot</h1>
-      <div className={health?.ok ? "card" : "warn"}>{health ? (health.ok ? "الخدمة شغالة" : "في مشكلة") : "جار الفحص…"}</div>
+      <div className={health?.marketplaceReady ? "card" : "warn"}>
+        {error || (health ? (health.marketplaceReady ? "الماركت جاهز" : "الموقع شغال في وضع المعاينة") : "جار الفحص…")}
+      </div>
       <ul>
-        <li>العروض الجديدة بتنتظر موافقة الإدارة قبل النشر.</li>
-        <li>بيانات التسليم مش بترجع في قائمة العروض.</li>
-        <li>التخزين الحالي ملفي ومؤقت على Vercel. قبل فلوس حقيقية لازم Postgres وبوابة دفع.</li>
+        <li>التصفح: {flows.browse ? "مفعّل" : "متوقف"}</li>
+        <li>التسجيل والبيع: {flows.register ? "مفعّل" : "موقوف لحد ربط قاعدة البيانات والأسرار"}</li>
+        <li>الدفع الحقيقي: غير مفعّل عمداً. الإسكرو الظاهر تجريبي.</li>
+        <li>التخزين: {health?.checks?.storage || "غير معروف"}</li>
       </ul>
+      <p><Link href="/setup">خطوات التفعيل</Link> · <Link href="/security">الحماية</Link> · <Link href="/changelog">سجل التطوير</Link></p>
     </main>
   );
 }

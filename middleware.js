@@ -4,6 +4,7 @@ const PROBES = [
   "/.env",
   "/wp-admin",
   "/wp-login",
+  "/wp-login.php",
   "/phpmyadmin",
   "/.git",
   "/xmlrpc.php",
