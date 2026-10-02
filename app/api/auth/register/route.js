@@ -1,8 +1,9 @@
-const { load, save, id } = require("../../../../lib/store");
+const { load, save, ready, id } = require("../../../../lib/store");
 const { scryptHash, sign, cookieHeader, ensureAdmin, rateLimit, ip } = require("../../../../lib/auth");
 const { clean, isEmail, strongPassword } = require("../../../../lib/guard");
 
 export async function POST(req) {
+  await ready();
   ensureAdmin();
   if (!rateLimit("reg:" + ip(req), 8)) return Response.json({ error: "محاولات كثيرة. حاول بعد دقيقة." }, { status: 429 });
   const body = await req.json().catch(() => ({}));

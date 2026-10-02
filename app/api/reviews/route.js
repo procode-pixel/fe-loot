@@ -1,8 +1,9 @@
-const { load, save, id, notify } = require("../../../lib/store");
+const { load, save, ready, id, notify } = require("../../../lib/store");
 const { currentUser, ensureAdmin, rateLimit, ip } = require("../../../lib/auth");
 const { clean } = require("../../../lib/guard");
 
 export async function GET(req) {
+  await ready();
   ensureAdmin();
   const url = new URL(req.url);
   const sellerId = url.searchParams.get("sellerId");
@@ -13,6 +14,7 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  await ready();
   ensureAdmin();
   if (!rateLimit("rev:" + ip(req), 8)) return Response.json({ error: "محاولات كثيرة." }, { status: 429 });
   const user = currentUser(req);
