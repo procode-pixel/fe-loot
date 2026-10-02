@@ -36,6 +36,6 @@ export async function POST(req) {
   }
   notify(db, order.sellerId, "تقييم جديد " + stars + "/5 على طلبك.");
   db.audit.push({ at: review.at, action: "review.create", orderId: order.id, userId: user.id });
-  save(db);
+  await save(db);
   return Response.json({ ok: true, review });
 }

@@ -37,6 +37,6 @@ export async function POST(req) {
   notify(db, other, "رسالة جديدة على الطلب " + order.id);
   db.audit.push({ at: message.at, action: "order.message", orderId: order.id, userId: user.id });
   if (db.audit.length > 400) db.audit = db.audit.slice(-400);
-  save(db);
+  await save(db);
   return Response.json({ ok: true, message });
 }

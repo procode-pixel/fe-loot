@@ -17,6 +17,6 @@ export async function POST(req) {
   listing.status = action === "approve" ? "active" : "rejected";
   listing.reviewedAt = new Date().toISOString();
   db.audit.push({ at: listing.reviewedAt, action: "listing." + listing.status, userId: user.id, listingId: listing.id });
-  save(db);
+  await save(db);
   return Response.json({ ok: true, listing: publicListing(listing) });
 }

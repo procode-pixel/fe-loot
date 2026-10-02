@@ -19,6 +19,6 @@ export async function POST(req) {
     if (l.sellerId === row.id) l.sellerName = name;
   });
   notify(db, row.id, "تم تحديث اسم العرض.");
-  save(db);
+  await save(db);
   return Response.json({ ok: true, name });
 }

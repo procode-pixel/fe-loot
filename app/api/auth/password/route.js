@@ -17,7 +17,7 @@ export async function POST(req) {
   row.passwordHash = scryptHash(next);
   row.tokenVersion = (row.tokenVersion || 1) + 1;
   db.audit.push({ at: new Date().toISOString(), action: "password.change", userId: user.id });
-  save(db);
+  await save(db);
   return new Response(JSON.stringify({ ok: true, user: publicUser(row) }), {
     headers: { "content-type": "application/json", "set-cookie": clearCookie() }
   });

@@ -25,6 +25,6 @@ export async function POST(req) {
     createdAt: new Date().toISOString()
   });
   db.audit.push({ at: new Date().toISOString(), action: "report", userId: user.id, listingId });
-  save(db);
+  await save(db);
   return Response.json({ ok: true, message: "\u0627\u0644\u0628\u0644\u0627\u063a \u0648\u0635\u0644 \u0644\u0644\u0625\u062f\u0627\u0631\u0629." });
 }

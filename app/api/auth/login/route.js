@@ -25,7 +25,7 @@ export async function POST(req) {
         user.lockedUntil = new Date(Date.now() + 15 * 60 * 1000).toISOString();
         user.failedLogins = 0;
       }
-      save(db);
+      await save(db);
     }
     return Response.json({ error: "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062f\u062e\u0648\u0644 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629." }, { status: 401 });
   }
@@ -39,7 +39,7 @@ export async function POST(req) {
   user.lockedUntil = null;
   user.tokenVersion = user.tokenVersion || 1;
   db.audit.push({ at: new Date().toISOString(), action: "login", userId: user.id });
-  save(db);
+  await save(db);
   const token = sign({ uid: user.id, tv: user.tokenVersion, exp: Date.now() + 7 * 864e5 });
   return new Response(JSON.stringify({ ok: true, user: publicUser(user) }), {
     headers: { "content-type": "application/json", "set-cookie": cookieHeader(token) }

@@ -14,10 +14,10 @@ export async function POST(req) {
   }
   const db = load();
   if (db.users.some((u) => u.email === email)) return Response.json({ error: "الإيميل مسجل بالفعل." }, { status: 409 });
-  const user = { id: id("u"), name, email, passwordHash: scryptHash(password), role: "user", rating: 5, createdAt: new Date().toISOString() };
+  const user = { id: id("u"), name, email, passwordHash: scryptHash(password), role: "user", rating: 5, balance: 0, favorites: [], tokenVersion: 1, createdAt: new Date().toISOString() };
   db.users.push(user);
   db.audit.push({ at: user.createdAt, action: "register", userId: user.id });
-  save(db);
+  await save(db);
   const token = sign({ uid: user.id, exp: Date.now() + 7 * 864e5 });
   return new Response(JSON.stringify({ ok: true, user: { id: user.id, name, email, role: user.role } }), {
     headers: { "content-type": "application/json", "set-cookie": cookieHeader(token) }

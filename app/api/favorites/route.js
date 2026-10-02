@@ -27,6 +27,6 @@ export async function POST(req) {
     if (row.favorites.length >= 40) return Response.json({ error: "\u0648\u0635\u0644\u062a \u0644\u0644\u062d\u062f \u0627\u0644\u0623\u0642\u0635\u0649 \u0644\u0644\u0645\u0641\u0636\u0644\u0629." }, { status: 429 });
     row.favorites.push(listingId);
   }
-  save(db);
+  await save(db);
   return Response.json({ ok: true, favorites: row.favorites });
 }

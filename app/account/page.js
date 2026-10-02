@@ -29,7 +29,7 @@ export default function Account() {
       {me && (
         <>
           <p>{me.name} · {me.email} · {me.role} · رصيد {Number(me.balance || 0).toLocaleString("ar-EG")} EGP</p>
-          <p><Link href="/wallet">المحفظة</Link> · <Link href="/offers">عروض السعر</Link></p>
+          <p><Link href="/wallet">المحفظة</Link> · <Link href="/offers">عروض السعر</Link> · <Link href="/alerts">تنبيهات السعر</Link></p>
           <form className="card" onSubmit={async (e) => {
             e.preventDefault();
             const res = await fetch("/api/auth/profile", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ name }) });

@@ -14,7 +14,7 @@ export async function POST(req) {
   if (body.action === "start") {
     const secret = generateSecret();
     row.totpPending = seal(secret);
-    save(db);
+    await save(db);
     return Response.json({ ok: true, secret, url: otpauthUrl(row.email, secret) });
   }
   if (body.action === "confirm") {
@@ -25,7 +25,7 @@ export async function POST(req) {
     row.totpEnabled = true;
     row.tokenVersion = (row.tokenVersion || 1) + 1;
     db.audit.push({ at: new Date().toISOString(), action: "2fa.enable", userId: row.id });
-    save(db);
+    await save(db);
     return Response.json({ ok: true, enabled: true });
   }
   if (body.action === "disable") {
@@ -37,7 +37,7 @@ export async function POST(req) {
     row.totpPending = "";
     row.tokenVersion = (row.tokenVersion || 1) + 1;
     db.audit.push({ at: new Date().toISOString(), action: "2fa.disable", userId: row.id });
-    save(db);
+    await save(db);
     return Response.json({ ok: true, enabled: false });
   }
   return Response.json({ error: "إجراء غير معروف." }, { status: 400 });
