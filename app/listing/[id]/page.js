@@ -5,10 +5,22 @@ import Link from "next/link";
 export default function Listing() {
   const { id } = useParams();
   const [item, setItem] = useState(null);
+  const [seller, setSeller] = useState(null);
+  const [missing, setMissing] = useState(false);
   const [msg, setMsg] = useState("");
   const [bid, setBid] = useState("");
+  const [reason, setReason] = useState("");
   const router = useRouter();
-  useEffect(() => { fetch("/api/listings").then(r=>r.json()).then(d => setItem((d.listings||[]).find(x => x.id === id) || null)); }, [id]);
+  useEffect(() => {
+    fetch("/api/listings/" + encodeURIComponent(id))
+      .then(async (r) => {
+        const d = await r.json();
+        if (!r.ok) { setMissing(true); return; }
+        setItem(d.listing);
+        setSeller(d.seller);
+      })
+      .catch(() => setMissing(true));
+  }, [id]);
   async function buy() {
     const res = await fetch("/api/orders", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ listingId: id }) });
     const data = await res.json();
@@ -21,23 +33,47 @@ export default function Listing() {
     const data = await res.json();
     setMsg(data.error || "تم إرسال المزايدة للبائع.");
   }
-  if (!item) return <main><p>العرض غير موجود أو اتحجز.</p></main>;
+  async function fav() {
+    const res = await fetch("/api/favorites", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ listingId: id }) });
+    const data = await res.json();
+    setMsg(data.error || "تم تحديث المفضلة.");
+  }
+  async function report(e) {
+    e.preventDefault();
+    const res = await fetch("/api/reports", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({ listingId: id, reason }) });
+    const data = await res.json();
+    setMsg(data.error || data.message || "تم إرسال البلاغ.");
+    if (res.ok) setReason("");
+  }
+  if (missing) return <main><p>العرض غير موجود أو اتحجز.</p><Link href="/">رجوع</Link></main>;
+  if (!item) return <main><p>جارٍ التحميل…</p></main>;
   return (
     <main>
       <div className="card">
         <div className="pill">{item.delivery === "instant" ? "تسليم فوري" : "تسليم يدوي"}</div>
         <h1>{item.title}</h1>
         <p>{item.description}</p>
-        <p className="muted">{item.sellerName} · {item.rating}</p>
-        <h2>{item.price.toLocaleString("ar-EG")} EGP</h2>
-        <p>الشراء يخصم من محفظة التجربة ويقفل المبلغ في الإسكرو. بيانات الدخول لا تظهر في الصفحة.</p>
+        <p className="muted">
+          <Link href={"/seller/" + item.sellerId}>{seller?.name || item.sellerName}</Link>
+          {" · تقييم "}{seller?.rating || item.rating}
+          {seller ? ` · مباع ${seller.sold} · تقييمات ${seller.reviews}` : ""}
+        </p>
+        <h2>{Number(item.price).toLocaleString("ar-EG")} EGP</h2>
+        <p>الشراء يخصم من محفظة التجربة ويقفل المبلغ في الإسكرو. بيانات الدخول لا تظهر في الصفحة العامة.</p>
         {msg && <div className="warn">{msg}</div>}
-        <button onClick={buy}>ادفع وقفّل الإسكرو</button>
+        <div className="grid">
+          <button onClick={buy}>ادفع وقفّل الإسكرو</button>
+          <button className="ghost" onClick={fav}>أضف للمفضلة</button>
+        </div>
         <form onSubmit={offer} style={{ marginTop: 12 }}>
           <input value={bid} onChange={(e) => setBid(e.target.value)} placeholder="مزايدة أقل من السعر" />
           <button className="ghost" type="submit">أرسل عرض سعر</button>
         </form>
-        <p><Link href="/wallet">شحن المحفظة</Link> · <Link href="/offers">عروضي</Link></p>
+        <form onSubmit={report} style={{ marginTop: 12 }}>
+          <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="سبب البلاغ (8 أحرف على الأقل)" />
+          <button className="ghost" type="submit">بلّغ عن العرض</button>
+        </form>
+        <p><Link href="/wallet">شحن المحفظة</Link> · <Link href="/offers">عروضي</Link> · <Link href="/">العروض</Link></p>
       </div>
     </main>
   );
