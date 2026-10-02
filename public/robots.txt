@@ -3,3 +3,7 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 Disallow: /account
+Disallow: /wallet
+Disallow: /orders
+Disallow: /login
+Disallow: /setup
