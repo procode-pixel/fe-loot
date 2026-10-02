@@ -38,6 +38,7 @@ export default function Home() {
           <Link href="/offers">عروض</Link>
           <Link href="/alerts">تنبيهات</Link>
           <Link href="/help">مساعدة</Link>
+          <Link href="/support">الدعم</Link>
           <Link href="/status">الحالة</Link>
           <Link href="/account">حسابي</Link>
           <Link href="/orders">طلباتي</Link>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 export const metadata = { title: "مساعدة فيلووت" };
 
 export default function Help() {
@@ -21,6 +22,7 @@ export default function Help() {
         <h2>لو حصل نصب؟</h2>
         <p>من صفحة الطلب اضغط نزاع. الحالة بتتحول disputed والإدارة بتقدر ترجّع للمشتري أو تفرج للبائع. متشاركش الباسورد خارج المحادثة جوه الطلب.</p>
       </section>
+          <p><Link href="/support">افتح تذكرة دعم</Link> لو الصفقة محتاجة تدخل الإدارة.</p>
     </main>
   );
 }
