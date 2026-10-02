@@ -18,6 +18,12 @@ export default function Listing() {
         if (!r.ok) { setMissing(true); return; }
         setItem(d.listing);
         setSeller(d.seller);
+        try {
+          const prev = JSON.parse(localStorage.getItem("feloot_recent") || "[]");
+          const row = { id: d.listing.id, title: d.listing.title, price: d.listing.price, game: d.listing.game, at: Date.now() };
+          const next = [row, ...prev.filter((x) => x.id !== row.id)].slice(0, 12);
+          localStorage.setItem("feloot_recent", JSON.stringify(next));
+        } catch {}
       })
       .catch(() => setMissing(true));
   }, [id]);
@@ -78,7 +84,7 @@ export default function Listing() {
           <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="سبب البلاغ (8 أحرف على الأقل)" />
           <button className="ghost" type="submit">بلّغ عن العرض</button>
         </form>
-        <p><Link href="/wallet">شحن المحفظة</Link> · <Link href="/offers">عروضي</Link> · <Link href="/">العروض</Link></p>
+        <p><Link href="/wallet">شحن المحفظة</Link> · <Link href="/offers">عروضي</Link> · <Link href="/recent">شوهد مؤخراً</Link> · <Link href="/">العروض</Link></p>
       </div>
     </main>
   );
