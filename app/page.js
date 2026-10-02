@@ -79,6 +79,7 @@ export default function Home() {
         </div>
         <h2>العروض</h2>
         <div className="grid">
+          {data.listings.length === 0 && <p className="muted">مفيش عروض مطابقة. غيّر اللعبة أو السعر أو امسح البحث.</p>}
           {data.listings.map((l) => (
             <article className="card" key={l.id}>
               <div className="pill">{l.delivery === "instant" ? "تسليم فوري" : "تسليم يدوي"} {l.featured ? "• مميز" : ""}</div>
@@ -94,7 +95,7 @@ export default function Home() {
           ))}
         </div>
       </main>
-      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/help">المساعدة</Link> · <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link></footer>
+      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/help">المساعدة</Link> · <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link> · <Link href="/changelog">سجل التطوير</Link></footer>
     </>
   );
 }
