@@ -60,6 +60,11 @@ export default function Listing() {
         </p>
         <h2>{Number(item.price).toLocaleString("ar-EG")} EGP</h2>
         <p>الشراء يخصم من محفظة التجربة ويقفل المبلغ في الإسكرو. بيانات الدخول لا تظهر في الصفحة العامة.</p>
+        <ul>
+          <li>متشاركش بيانات الدخول خارج الإسكرو.</li>
+          <li>غيّر الإيميل وكلمة السر بعد الاستلام وقبل ما تأكد.</li>
+          <li>لو الحساب مش مطابق للوصف، اعمل شكوى من الطلب قبل التأكيد.</li>
+        </ul>
         {msg && <div className="warn">{msg}</div>}
         <div className="grid">
           <button onClick={buy}>ادفع وقفّل الإسكرو</button>

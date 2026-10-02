@@ -32,6 +32,7 @@ export default function Home() {
       <header>
         <Link className="brand" href="/">FeLoot</Link>
         <nav>
+          <Link href="/games">الألعاب</Link>
           <Link href="/compare">مقارنة</Link>
           <Link href="/wallet">المحفظة</Link>
           <Link href="/offers">عروض</Link>
@@ -75,7 +76,7 @@ export default function Home() {
         <h2>تصفح حسب اللعبة</h2>
         <div className="grid">
           <button className="card ghost" onClick={() => { setGame(""); load(q, ""); }}>الكل</button>
-          {data.games.map((g) => <button className="card" key={g.id} onClick={() => { setGame(g.id); load(q, g.id); }}>{g.emoji} {g.name} · {g.count || 0}</button>)}
+          {data.games.map((g) => <Link className="card" key={g.id} href={"/games/" + g.id}>{g.emoji} {g.name} · {g.count || 0}</Link>)}
         </div>
         <h2>العروض</h2>
         <div className="grid">
