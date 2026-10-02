@@ -11,13 +11,13 @@ jobs:
         run: |
           set -e
           base="${SITE_URL:-https://fe-loot-v0.vercel.app}"
-          for path in / /games /status /setup /api/health /api/stats /security /help /terms /privacy /login /offers /wallet /alerts /changelog /safety /support /dashboard /sitemap.xml; do
+          for path in / /games /status /setup /api/health /api/stats /security /help /terms /privacy /login /offers /wallet /alerts /changelog /safety /support /dashboard /recent /sitemap.xml; do
             code=$(curl -s -o /tmp/body -w "%{http_code}" -L --max-time 25 "$base$path")
             echo "$path $code"
             test "$code" = "200"
           done
           grep -q "FeLoot\|feloot\|ok" /tmp/body
-          for probe in /.env /.git/config /wp-login.php /server-status; do
+          for probe in /.env /.git/config /wp-login.php /server-status /web.config /trace.axd; do
             code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "$base$probe")
             echo "probe $probe $code"
             test "$code" = "404"

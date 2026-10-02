@@ -19,7 +19,13 @@ const PROBES = [
   "/backup",
   "/.env.local",
   "/.env.production",
-  "/api/env"
+  "/api/env",
+  "/.svn",
+  "/.ds_store",
+  "/web.config",
+  "/elmah",
+  "/trace.axd",
+  "/debug/pprof"
 ];
 
 export function middleware(req) {

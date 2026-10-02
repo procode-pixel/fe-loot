@@ -28,6 +28,7 @@ export async function GET(req) {
   if (sort === "price_asc") rows.sort((a, b) => a.price - b.price);
   else if (sort === "price_desc") rows.sort((a, b) => b.price - a.price);
   else if (sort === "rating") rows.sort((a, b) => Number(b.rating) - Number(a.rating));
+  else if (sort === "newest") rows.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
   else rows.sort((a, b) => Number(b.featured) - Number(a.featured) || String(b.createdAt).localeCompare(String(a.createdAt)));
   return Response.json({
     games: GAMES.map((g) => ({ ...g, count: db.listings.filter((l) => l.game === g.id && l.status === "active").length })),
