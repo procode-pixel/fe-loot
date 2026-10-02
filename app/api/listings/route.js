@@ -1,4 +1,4 @@
-const { load, save, id, publicListing, GAMES } = require("../../../lib/store");
+const { load, save, ready, id, publicListing, GAMES } = require("../../../lib/store");
 const { currentUser, ensureAdmin, rateLimit, ip } = require("../../../lib/auth");
 const { clean } = require("../../../lib/guard");
 const { seal } = require("../../../lib/box");
@@ -6,6 +6,7 @@ const { seal } = require("../../../lib/box");
 const GAMES_IDS = GAMES.map((g) => g.id);
 
 export async function GET(req) {
+  await ready();
   ensureAdmin();
   const db = load();
   const url = new URL(req.url);
@@ -36,6 +37,7 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+  await ready();
   ensureAdmin();
   if (!rateLimit("sell:" + ip(req), 8)) return Response.json({ error: "بطّئ شوية، محاولات كثيرة." }, { status: 429 });
   const user = currentUser(req);
@@ -60,6 +62,6 @@ export async function POST(req) {
   db.listings.unshift(listing);
   db.audit.push({ at: listing.createdAt, action: "listing.pending", userId: user.id, listingId: listing.id });
   if (db.audit.length > 400) db.audit = db.audit.slice(-400);
-  save(db);
+  await save(db);
   return Response.json({ ok: true, listing: publicListing(listing), message: "العرض اتبعت للمراجعة ومش هيظهر قبل موافقة الإدارة." });
 }

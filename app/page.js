@@ -34,6 +34,7 @@ export default function Home() {
         <nav>
           <Link href="/compare">مقارنة</Link>
           <Link href="/wallet">المحفظة</Link>
+          <Link href="/offers">عروض</Link>
           <Link href="/help">مساعدة</Link>
           <Link href="/status">الحالة</Link>
           <Link href="/account">حسابي</Link>

@@ -32,3 +32,8 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Public health: /api/health
 - On Vercel without DATABASE_URL, data lives in /tmp and resets.
 - Vercel team env access may require reconnecting the Vercel account that owns fe-loot-v0.
+
+## 2026-10-02
+- Demo wallet top-up with daily cap. Purchases debit balance into escrow; refunds and seller release credit the wallet.
+- Price offers at /offers and /api/offers. Dispute after release is blocked.
+- Order actions await durable save. Rate-limit IP prefers x-vercel-forwarded-for.
