@@ -14,7 +14,11 @@ const PROBES = [
   "/.aws",
   "/.ssh",
   "/config.json",
-  "/wp-content"
+  "/wp-content",
+  "/backup",
+  "/.env.local",
+  "/.env.production",
+  "/api/env"
 ];
 
 export function middleware(req) {
@@ -34,6 +38,7 @@ export function middleware(req) {
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
   res.headers.set("X-DNS-Prefetch-Control", "off");
+  res.headers.set("X-Permitted-Cross-Domain-Policies", "none");
   res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
   res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
   res.headers.set(
