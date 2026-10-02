@@ -12,6 +12,10 @@ export async function GET(_req, { params }) {
   const seller = db.users.find((u) => u.id === listing.sellerId);
   const sold = db.listings.filter((l) => l.sellerId === listing.sellerId && l.status === "sold").length;
   const reviews = (db.reviews || []).filter((r) => r.sellerId === listing.sellerId);
+  const similar = db.listings
+    .filter((l) => l.status === "active" && l.id !== listing.id && l.game === listing.game)
+    .slice(0, 3)
+    .map((l) => publicListing(l));
   return Response.json({
     listing: publicListing(listing),
     seller: {
@@ -20,6 +24,7 @@ export async function GET(_req, { params }) {
       rating: seller?.rating || listing.rating || 5,
       sold,
       reviews: reviews.length
-    }
+    },
+    similar
   });
 }

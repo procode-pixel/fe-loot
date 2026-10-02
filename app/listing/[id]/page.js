@@ -10,6 +10,7 @@ export default function Listing() {
   const [msg, setMsg] = useState("");
   const [bid, setBid] = useState("");
   const [reason, setReason] = useState("");
+  const [similar, setSimilar] = useState([]);
   const router = useRouter();
   useEffect(() => {
     fetch("/api/listings/" + encodeURIComponent(id))
@@ -18,6 +19,7 @@ export default function Listing() {
         if (!r.ok) { setMissing(true); return; }
         setItem(d.listing);
         setSeller(d.seller);
+        setSimilar(Array.isArray(d.similar) ? d.similar : []);
         try {
           const prev = JSON.parse(localStorage.getItem("feloot_recent") || "[]");
           const row = { id: d.listing.id, title: d.listing.title, price: d.listing.price, game: d.listing.game, at: Date.now() };
@@ -75,6 +77,13 @@ export default function Listing() {
         <div className="grid">
           <button onClick={buy}>ادفع وقفّل الإسكرو</button>
           <button className="ghost" onClick={fav}>أضف للمفضلة</button>
+          <button className="ghost" type="button" onClick={async () => {
+            const url = window.location.href;
+            try {
+              if (navigator.share) await navigator.share({ title: item.title, url });
+              else { await navigator.clipboard.writeText(url); setMsg("تم نسخ رابط العرض."); }
+            } catch { setMsg("انسخ الرابط من شريط المتصفح."); }
+          }}>مشاركة الرابط</button>
         </div>
         <form onSubmit={offer} style={{ marginTop: 12 }}>
           <input value={bid} onChange={(e) => setBid(e.target.value)} placeholder="مزايدة أقل من السعر" />
@@ -84,6 +93,16 @@ export default function Listing() {
           <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="سبب البلاغ (8 أحرف على الأقل)" />
           <button className="ghost" type="submit">بلّغ عن العرض</button>
         </form>
+        {similar.length > 0 && (
+          <section>
+            <h2>عروض مشابهة</h2>
+            <ul>
+              {similar.map((s) => (
+                <li key={s.id}><Link href={"/listing/" + s.id}>{s.title} — {Number(s.price).toLocaleString("ar-EG")} EGP</Link></li>
+              ))}
+            </ul>
+          </section>
+        )}
         <p><Link href="/wallet">شحن المحفظة</Link> · <Link href="/offers">عروضي</Link> · <Link href="/recent">شوهد مؤخراً</Link> · <Link href="/">العروض</Link></p>
       </div>
     </main>
