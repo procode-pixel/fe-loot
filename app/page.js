@@ -14,10 +14,11 @@ export default function Home() {
   const [me, setMe] = useState(null);
   const [game, setGame] = useState("");
   const [sort, setSort] = useState("featured");
+  const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [delivery, setDelivery] = useState("");
-  async function load(query = q, gameId = game, nextSort = sort, nextMax = max, nextDelivery = delivery) {
-    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId) + "&sort=" + encodeURIComponent(nextSort) + "&max=" + encodeURIComponent(nextMax) + "&delivery=" + encodeURIComponent(nextDelivery));
+  async function load(query = q, gameId = game, nextSort = sort, nextMin = min, nextMax = max, nextDelivery = delivery) {
+    const res = await fetch("/api/listings?q=" + encodeURIComponent(query) + "&game=" + encodeURIComponent(gameId) + "&sort=" + encodeURIComponent(nextSort) + "&min=" + encodeURIComponent(nextMin) + "&max=" + encodeURIComponent(nextMax) + "&delivery=" + encodeURIComponent(nextDelivery));
     setData(await res.json());
   }
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function Home() {
         <nav>
           <Link href="/games">الألعاب</Link>
           <Link href="/compare">مقارنة</Link>
+          <Link href="/recent">شوهد مؤخراً</Link>
           <Link href="/wallet">المحفظة</Link>
           <Link href="/offers">عروض</Link>
           <Link href="/alerts">تنبيهات</Link>
@@ -61,14 +63,16 @@ export default function Home() {
           </div>
           <div className="grid">
             <input placeholder="ابحث عن أكونت" value={q} onChange={(e) => { setQ(e.target.value); load(e.target.value); }} />
-            <select value={sort} onChange={(e) => { setSort(e.target.value); load(q, game, e.target.value, max); }}>
+            <select value={sort} onChange={(e) => { setSort(e.target.value); load(q, game, e.target.value, min, max, delivery); }}>
               <option value="featured">المميز</option>
+              <option value="newest">الأحدث</option>
               <option value="price_asc">السعر: الأقل</option>
               <option value="price_desc">السعر: الأعلى</option>
               <option value="rating">التقييم</option>
             </select>
-            <input placeholder="أقصى سعر" value={max} onChange={(e) => { setMax(e.target.value); load(q, game, sort, e.target.value, delivery); }} />
-            <select value={delivery} onChange={(e) => { setDelivery(e.target.value); load(q, game, sort, max, e.target.value); }}>
+            <input placeholder="أقل سعر" value={min} onChange={(e) => { setMin(e.target.value); load(q, game, sort, e.target.value, max, delivery); }} />
+            <input placeholder="أقصى سعر" value={max} onChange={(e) => { setMax(e.target.value); load(q, game, sort, min, e.target.value, delivery); }} />
+            <select value={delivery} onChange={(e) => { setDelivery(e.target.value); load(q, game, sort, min, max, e.target.value); }}>
               <option value="">كل التسليم</option>
               <option value="instant">تسليم فوري</option>
               <option value="manual">تسليم يدوي</option>
@@ -77,7 +81,7 @@ export default function Home() {
         </section>
         <h2>تصفح حسب اللعبة</h2>
         <div className="grid">
-          <button className="card ghost" onClick={() => { setGame(""); load(q, ""); }}>الكل</button>
+          <button className="card ghost" onClick={() => { setGame(""); load(q, "", sort, min, max, delivery); }}>الكل</button>
           {data.games.map((g) => <Link className="card" key={g.id} href={"/games/" + g.id}>{g.emoji} {g.name} · {g.count || 0}</Link>)}
         </div>
         <h2>العروض</h2>
