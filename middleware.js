@@ -41,9 +41,13 @@ const PROBES = [
   "/invoker"
 ];
 
+function isProbe(path) {
+  return PROBES.some((p) => path === p || path.startsWith(p + "/") || path.endsWith(p) || path.includes(p + "/"));
+}
+
 export function middleware(req) {
   const path = req.nextUrl.pathname.toLowerCase();
-  if (PROBES.some((p) => path === p || path.startsWith(p + "/") || path.includes(p))) {
+  if (isProbe(path)) {
     return new NextResponse("not found", { status: 404 });
   }
   if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e") || path.includes("%00")) {
