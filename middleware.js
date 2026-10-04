@@ -41,13 +41,29 @@ const PROBES = [
   "/invoker"
 ];
 
+const PUBLIC_ROOTS = new Set([
+  "games",
+  "fees",
+  "deals",
+  "sell",
+  "login",
+  "categories",
+  "browse",
+  "status",
+  "setup",
+  "account",
+  "listing"
+]);
+
 function isProbe(path) {
-  return PROBES.some((p) => path === p || path.startsWith(p + "/") || path.endsWith(p) || path.includes(p + "/"));
+  return PROBES.some((p) => path === p || path.startsWith(p + "/"));
 }
 
 export function middleware(req) {
   const path = req.nextUrl.pathname.toLowerCase();
-  if (isProbe(path)) {
+  const root = path.split("/").filter(Boolean)[0] || "";
+  const publicRoute = PUBLIC_ROOTS.has(root);
+  if (!publicRoute && isProbe(path)) {
     return new NextResponse("not found", { status: 404 });
   }
   if (path.endsWith(".php") || path.includes("..") || path.includes("%2e%2e") || path.includes("%00")) {
