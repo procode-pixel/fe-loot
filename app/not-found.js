@@ -6,8 +6,10 @@ export default function NotFound() {
       <p>اللينك اللي دخلت عليه غلط أو الصفحة اتشالت.</p>
       <p>
         <Link className="btn" href="/">الرئيسية</Link>{" "}
-        <Link className="btn" href="/categories">التصنيفات</Link>{" "}
+        <Link className="btn" href="/games">الألعاب</Link>{" "}
+        <Link className="btn" href="/deals">الصفقات</Link>{" "}
         <Link className="btn" href="/fees">الرسوم</Link>{" "}
+        <Link className="btn" href="/categories">التصنيفات</Link>{" "}
         <Link className="btn" href="/status">حالة الخدمة</Link>
       </p>
     </main>
