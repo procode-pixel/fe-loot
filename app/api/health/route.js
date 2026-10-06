@@ -1,6 +1,9 @@
 const { load, storageMode, ready } = require("../../../lib/store");
 const { hasKey } = require("../../../lib/box");
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   await ready();
   const db = load();
@@ -35,5 +38,9 @@ export async function GET() {
       orders: (db.orders || []).length
     },
     time: new Date().toISOString()
+  }, {
+    headers: {
+      "Cache-Control": "no-store"
+    }
   });
 }
