@@ -25,7 +25,7 @@ export default function Login() {
         {err && <div className="warn">{err}</div>}
         <button>{mode === "login" ? "دخول" : "تسجيل"}</button>
         <button type="button" className="ghost" onClick={() => setMode(mode === "login" ? "register" : "login")}>{mode === "login" ? "إنشاء حساب" : "عندي حساب"}</button>
-        <p className="muted">تجربة الأدمن: admin@feloot.app / Admin#FeLoot2026 — غيّرها عبر ADMIN_PASSWORD و AUTH_SECRET.</p>
+        <p className="muted">الدخول الإداري من متغيرات البيئة فقط. لا توجد كلمة مرور تجريبية معروضة هنا.</p>
       </form>
     </main>
   );
