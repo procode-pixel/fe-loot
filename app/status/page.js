@@ -5,12 +5,26 @@ import Link from "next/link";
 export default function Status() {
   const [health, setHealth] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function loadHealth() {
+    setLoading(true);
+    setError("");
+    try {
+      const r = await fetch("/api/health", { cache: "no-store" });
+      if (!r.ok) throw new Error("bad status");
+      setHealth(await r.json());
+    } catch {
+      setError("تعذر قراءة الحالة");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    fetch("/api/health")
-      .then((r) => r.json())
-      .then(setHealth)
-      .catch(() => setError("تعذر قراءة الحالة"));
+    loadHealth();
   }, []);
+
   const flows = health?.userFlows || {};
   const checks = health?.checks || {};
   return (
@@ -29,7 +43,7 @@ export default function Status() {
         <li>مفتاح التشفير: {checks.encryption ? "موجود" : "ناقص"}</li>
       </ul>
       <p><Link href="/setup">خطوات التفعيل</Link> · <Link href="/security">الحماية</Link> · <Link href="/changelog">سجل التطوير</Link></p>
-      <button onClick={() => window.location.reload()}>إعادة الفحص الآن</button>
+      <button onClick={loadHealth} disabled={loading}>{loading ? "جار الفحص…" : "إعادة الفحص الآن"}</button>
     </main>
   );
 }
