@@ -4,12 +4,12 @@ export default function NotFound() {
     <main style={{ maxWidth: 720, margin: "48px auto", padding: 16, textAlign: "center" }}>
       <h1>404 — الصفحة مش موجودة</h1>
       <p>اللينك اللي دخلت عليه غلط أو الصفحة لسه مش متاحة في النسخة الحالية من الموقع.</p>
-      <p className="muted">الموقع حاليًا في وضع المعاينة لأن متغيرات البيئة (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) غير مضبوطة على Vercel. التصفح والعروض التجريبية شغالين. إذا ظهرت 404 على صفحات معروفة مثل /games أو /fees أو /deals، أعد النشر من Vercel بعد ضبط المتغيرات.</p>
+      <p className="muted">الموقع حاليًا في وضع المعاينة لأن متغيرات البيئة (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) غير مضبوطة على Vercel (فريق dosers-projects). التصفح والعروض التجريبية شغالين. إذا ظهرت 404 على صفحات معروفة مثل /games أو /fees أو /deals، أعد النشر من أحدث كود في مستودع procode-pixel/fe-loot بعد ضبط المتغيرات.</p>
       <p>
         <Link className="btn" href="/">الرئيسية</Link>{" "}
+        <Link className="btn" href="/browse">تصفح الأكونتات</Link>{" "}
         <Link className="btn" href="/status">حالة الخدمة</Link>{" "}
-        <Link className="btn" href="/setup">خطوات التفعيل</Link>{" "}
-        <Link className="btn" href="/security">الحماية</Link>
+        <Link className="btn" href="/setup">خطوات التفعيل</Link>
       </p>
     </main>
   );
