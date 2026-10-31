@@ -14,6 +14,8 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - ADMIN_PASSWORD strong unique password.
 - DATABASE_URL Postgres connection. Without it, storage is a local file or lambda memory and is not durable on Vercel.
 
+These three (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) must be set on the Vercel team **dosers-projects** for the production site fe-loot-v0.vercel.app. Until then the site stays in preview mode and some routes may 404 on older deployments. After setting them, redeploy from the latest main.
+
 ## Security notes
 - New listings stay pending until an admin approves them.
 - Credentials are encrypted at rest and stripped from public listing responses.
@@ -32,6 +34,11 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - Public health: /api/health
 - On Vercel without DATABASE_URL, data lives in /tmp and resets.
 - Vercel team env access may require reconnecting the Vercel account that owns fe-loot-v0.
+
+## 2026-10-31 daily check
+- Site is in previewMode because DATABASE_URL, AUTH_SECRET and ENCRYPTION_KEY are missing on the Vercel project.
+- /games, /fees and /deals currently 404 on the live deployment (code exists in repo; needs redeploy after env setup).
+- Home, /browse, /status and /login behave as expected for preview.
 
 ## 2026-10-02
 - Demo wallet top-up with daily cap. Purchases debit balance into escrow; refunds and seller release credit the wallet.
