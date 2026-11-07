@@ -42,6 +42,7 @@ export default function Status() {
         <li>سر المصادقة: {checks.authSecret ? "موجود" : "ناقص"}</li>
         <li>مفتاح التشفير: {checks.encryption ? "موجود" : "ناقص"}</li>
       </ul>
+      <p className="muted">ملاحظة: صفحات مثل /games و /fees و /deals قد تظهر 404 حالياً بسبب وضع المعاينة أو حاجة لإعادة نشر بعد ضبط متغيرات البيئة على Vercel. استخدم الروابط في صفحة 404 أو الرئيسية.</p>
       <p><Link href="/setup">خطوات التفعيل</Link> · <Link href="/security">الحماية</Link> · <Link href="/changelog">سجل التطوير</Link></p>
       <button onClick={loadHealth} disabled={loading}>{loading ? "جار الفحص…" : "إعادة الفحص الآن"}</button>
     </main>
