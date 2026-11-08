@@ -35,6 +35,11 @@ These three (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) must be set on the Verce
 - On Vercel without DATABASE_URL, data lives in /tmp and resets.
 - Vercel team env access may require reconnecting the Vercel account that owns fe-loot-v0.
 
+## 2026-11-08 daily check
+- Confirmed previewMode=true on /api/health (database, authSecret, encryption all false). No secrets printed.
+- /games, /fees, /deals still 404 on live (code present in repo; current deployment older). Home, /status, /login, /sell (redirects to login with preview notice) behave correctly. Banner present.
+- Small UI clarification committed to status page note. Still needs Vercel env vars on team dosers-projects then redeploy.
+
 ## 2026-11-04 daily check
 - Confirmed previewMode=true on /api/health (database, authSecret, encryption all false). No secrets printed.
 - /games, /fees, /deals still 404 on live (code present in repo; deployment needs redeploy after env vars on team dosers-projects).
