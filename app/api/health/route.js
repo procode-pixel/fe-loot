@@ -10,7 +10,8 @@ export async function GET() {
   const authOk = String(process.env.AUTH_SECRET || "").length >= 24;
   const durable = Boolean(process.env.DATABASE_URL);
   const encryption = hasKey();
-  const marketplaceReady = authOk && durable && encryption;
+  const liveLaunch = process.env.MARKETPLACE_LIVE === "1";
+  const marketplaceReady = liveLaunch && authOk && durable && encryption;
   return Response.json({
     ok: true,
     service: "feloot",

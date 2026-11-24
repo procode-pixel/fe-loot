@@ -27,7 +27,7 @@ export default function Sell() {
   return (
     <main>
       <h1>بيع أكونت</h1>
-      <p className="muted">العرض مش هينزل على الماركت غير بعد مراجعة الإدارة. متحطش بيانات دخول حقيقية لأكونت مش ملكك.</p>
+      <p className="muted">العرض مش هينزل على الماركت غير بعد مراجعة الإدارة. متحطش بيانات دخول حقيقية لأي أكونت في النسخة التجريبية.</p>
       {preview && <p className="warn">البيع موقوف لحد تفعيل الخدمة. التفاصيل في <Link href="/status">صفحة الحالة</Link>.</p>}
       <form className="card" onSubmit={submit} style={{ display:"grid", gap:10, maxWidth:560 }}>
         <input placeholder="عنوان العرض" value={form.title} onChange={e=>setForm({...form,title:e.target.value})} disabled={preview} />

@@ -55,11 +55,11 @@ export default function Home() {
       <main>
         <div className="warn">المعروض حالياً معاينة. العروض الجديدة تنتظر موافقة الإدارة، ومفيش تحويل فلوس حقيقي.</div>
         <section className="hero">
-          <div className="pill">معاملات محمية بنظام الإسكرو</div>
-          <h1>اشتري وبيع أكونتات الألعاب بدون مخاطرة</h1>
-          <p className="muted">فلوسك بتتقفل لحد ما تستلم الأكونت وتأكده. بيانات الدخول مش بتظهر غير بعد حجز الإسكرو.</p>
+          <div className="pill">نسخة تجريبية — مفيش فلوس حقيقية</div>
+          <h1>اشتري وبيع أكونتات الألعاب بنظام الإسكرو</h1>
+          <p className="muted">دي نسخة معاينة ببيانات وهمية. لما الخدمة تتفعل: فلوسك بتتقفل لحد ما تستلم الأكونت وتأكده.</p>
           <div className="stats">
-            <div><b>100%</b><div className="muted">إسكرو</div></div>
+            <div><b>تجريبي</b><div className="muted">وضع المعاينة</div></div>
             <div><b>{data.listings.length}</b><div className="muted">عرض متاح</div></div>
             <div><b>1-5 د</b><div className="muted">متوسط المراجعة</div></div>
           </div>
@@ -95,7 +95,7 @@ export default function Home() {
               <h3>{l.title}</h3>
               <p className="muted">{l.sellerName} · {l.rating}</p>
               <b>{l.price.toLocaleString("ar-EG")} EGP</b>
-              <div className="muted">Protected by FeLoot Escrow</div>
+              <div className="muted">إسكرو تجريبي — لا أموال حقيقية</div>
               <div style={{ display:"flex", gap:8, marginTop:8 }}>
                 <Link className="btn" href={"/listing/" + l.id}>التفاصيل</Link>
                 <button className="ghost" onClick={() => toggleCompare(l.id)}>قارن</button>
@@ -104,7 +104,7 @@ export default function Home() {
           ))}
         </div>
       </main>
-      <footer>FeLoot — فلوسك في الخزنة لحد الاستلام. لا تشارك بيانات الدخول خارج الصفقة. <Link href="/help">المساعدة</Link> · <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link> · <Link href="/changelog">سجل التطوير</Link></footer>
+      <footer>FeLoot — نسخة معاينة تجريبية بلا فلوس حقيقية. متحطش بيانات دخول حقيقية لأي أكونت. <Link href="/help">المساعدة</Link> · <Link href="/status">الحالة</Link> · <Link href="/security">الأمان</Link> · <Link href="/changelog">سجل التطوير</Link></footer>
     </>
   );
 }
