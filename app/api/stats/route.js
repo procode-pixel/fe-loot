@@ -1,4 +1,4 @@
-const { load, ready, GAMES } = require("../../../../lib/store");
+const { load, ready, GAMES } = require("../../../lib/store");
 
 export async function GET() {
   await ready();

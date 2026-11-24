@@ -12,7 +12,12 @@ Set ADMIN_PASSWORD (10+ chars) and AUTH_SECRET (24+ chars) before production. Do
 - AUTH_SECRET long random string. Production login refuses a missing secret.
 - ENCRYPTION_KEY separate 32+ char secret for delivery credentials (AES-256-GCM).
 - ADMIN_PASSWORD strong unique password.
-- DATABASE_URL Postgres connection. Without it, storage is a local file or lambda memory and is not durable on Vercel.
+- DATABASE_URL Postgres connection. Without it, storage is a local file or lambda memory and is not durable on Vercel. On Vercel serverless use the Supabase pooler URI (port 6543).
+
+See .env.example for the full list.
+
+## Database
+Structured Postgres schema, one table per entity: users, listings, orders, disputes, messages, reviews, offers, watches, notifications, reports, tickets, verifications, audit_log. Tables and indexes are created automatically on first boot (idempotent DDL in lib/persist.js, documented in db/schema.sql). The retired single-row feloot_state JSON document is imported once automatically if found. Each table keeps array order via `position` and an `extra` jsonb overflow column so unknown future fields are preserved.
 
 These three (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) must be set on the Vercel team **dosers-projects** for the production site fe-loot-v0.vercel.app. Until then the site stays in preview mode and some routes may 404 on older deployments. After setting them, redeploy from the latest main.
 
@@ -34,6 +39,11 @@ These three (DATABASE_URL, AUTH_SECRET, ENCRYPTION_KEY) must be set on the Verce
 - Public health: /api/health
 - On Vercel without DATABASE_URL, data lives in /tmp and resets.
 - Vercel team env access may require reconnecting the Vercel account that owns fe-loot-v0.
+
+## 2026-11-24 upgrade
+- Replaced single-row feloot_state JSONB persistence with structured per-entity tables (see Database section).
+- Added db/schema.sql and .env.example.
+- Legacy feloot_state documents are imported once on first boot, then ignored.
 
 ## 2026-11-23 daily check
 - Confirmed previewMode=true on /api/health (database, authSecret, encryption all false; cronSecret also false). No secrets printed.

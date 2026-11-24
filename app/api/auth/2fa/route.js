@@ -1,7 +1,7 @@
-const { load, save } = require("../../../../../lib/store");
-const { currentUser, verifyPassword, ensureAdmin } = require("../../../../../lib/auth");
-const { seal, open } = require("../../../../../lib/box");
-const { generateSecret, verifyTotp, otpauthUrl } = require("../../../../../lib/totp");
+const { load, save } = require("../../../../lib/store");
+const { currentUser, verifyPassword, ensureAdmin } = require("../../../../lib/auth");
+const { seal, open } = require("../../../../lib/box");
+const { generateSecret, verifyTotp, otpauthUrl } = require("../../../../lib/totp");
 
 export async function POST(req) {
   ensureAdmin();

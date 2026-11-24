@@ -1,4 +1,4 @@
-const { load, ready, publicListing } = require("../../../../../lib/store");
+const { load, ready, publicListing } = require("../../../../lib/store");
 
 export async function GET(_req, { params }) {
   await ready();
