@@ -30,13 +30,13 @@ export default function Status() {
   return (
     <main style={{ maxWidth: 760, margin: "40px auto", padding: 16 }}>
       <Link href="/">FeLoot</Link>
-      <h1>حالة FeLoot</h1>
+      <h1>حالة النظام</h1>
       <div className={health?.marketplaceReady ? "card" : "warn"}>
-        {error || (health ? (health.marketplaceReady ? "الماركت جاهز للتسجيل والبيع" : "الموقع شغال في وضع المعاينة — قاعدة البيانات أو مفاتيح المصادقة غير مربوطة") : "جار الفحص…")}
+        {error || (health ? (health.marketplaceReady ? "الماركت جاهز للتسجيل والبيع" : "الموقع في وضع المعاينة لأن متغيرات البيئة غير مربوطة على Vercel") : "جار الفحص…")}
       </div>
       <ul>
         <li>التصفح: {flows.browse ? "مفعّل" : "متوقف"}</li>
-        <li>التسجيل والبيع: {flows.register ? "مفعّل" : "موقوف لحد ربط DATABASE_URL و AUTH_SECRET و ENCRYPTION_KEY"}</li>
+        <li>التسجيل والبيع: {flows.register ? "مفعّل" : "موقوف لحد ربط متغيرات البيئة وإعادة النشر"}</li>
         <li>الدفع الحقيقي: غير مفعّل عمداً. الإسكرو الظاهر تجريبي.</li>
         <li>قاعدة البيانات: {checks.database ? "مربوطة" : "غير مربوطة"}</li>
         <li>سر المصادقة: {checks.authSecret ? "موجود" : "ناقص"}</li>
